@@ -88,14 +88,14 @@ export default (bill) => {
         </div>
        `)}
       </div>
-      <div class="row">
+       <div class="row">
       ${bill.status === 'pending' ? (`
       <div class="col-sm buttons-flex" style="width: 300px;" >
         <button type="submit" id='btn-refuse-bill' data-testid='btn-refuse-bill-d' class="btn btn-primary">Refuser</button>
         <button type="submit" id='btn-accept-bill' data-testid='btn-accept-bill-d' class="btn btn-primary">Accepter</button>
       </div>
       `) : ''}
-    </div>
+    </div> 
     ${modal()}
     </div>
   `)
