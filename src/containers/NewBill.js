@@ -11,34 +11,36 @@ export default class NewBill {
     formNewBill.addEventListener("submit", this.handleSubmit)
     const file = this.document.querySelector(`input[data-testid="file"]`)
     file.addEventListener("change", this.handleChangeFile)
-    this.fileUrl = null
+    this.fileUrl =null
     this.fileName = null
     new Logout({ document, localStorage, onNavigate })
   }
   handleChangeFile = e => {
-    const file = this.document.querySelector(`input[data-testid="file"]`).files[0]
+    const file = e.target.files[0]
     const filePath = e.target.value.split(/\\/g)
     const fileName = filePath[filePath.length - 1];
     const formatsFile = ['jpg', 'jpeg', 'png'];
     const formatFileValue = fileName.split('.').pop();
     var result = formatsFile.some((f) => f === formatFileValue);
+    const btnSubmit = document.getElementById('btn-send-bill')
+    btnSubmit.disabled =false;
     if (result) {
-      this.firestore
+     this.firestore
         .storage
         .ref(`justificatifs/${fileName}`)
         .put(file)
-        .then(snapshot => snapshot.ref.getDownloadURL())
+        .then(snapshot => {snapshot.ref.getDownloadURL();
+        })
         .then(url => {
           this.fileUrl = url
           this.fileName = fileName
         })
     }else{
-      throw new Error("mauvais format de fichier");
+      return false
     }
   }
   handleSubmit = e => {
     e.preventDefault()
-    console.log('e.target.querySelector(`input[data-testid="datepicker"]`).value', e.target.querySelector(`input[data-testid="datepicker"]`).value)
     const email = JSON.parse(localStorage.getItem("user")).email
     const bill = {
       email,
@@ -58,6 +60,7 @@ export default class NewBill {
   }
 
   // not need to cover this function by tests
+  /* istanbul ignore next */
   createBill = (bill) => {
     if (this.firestore) {
       this.firestore

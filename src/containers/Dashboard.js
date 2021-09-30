@@ -134,9 +134,13 @@ export default class {
     if (this.counter === undefined || this.index !== index) this.counter = 0
     if (this.index === undefined || this.index !== index) this.index = index
     if (this.counter % 2 === 0) {
+      let billsFiltered = filteredBills(bills, getStatus(this.index))
       $(`#arrow-icon${this.index}`).css({ transform: 'rotate(0deg)'})
       $(`#status-bills-container${this.index}`)
-        .html(cards(filteredBills(bills, getStatus(this.index))))
+        .html(cards(billsFiltered));
+        billsFiltered.forEach(bill => {
+          $(`#open-bill${bill.id}`).click((e) => this.handleEditTicket(e, bill, bills))
+        })
       this.counter ++
     } else {
       $(`#arrow-icon${this.index}`).css({ transform: 'rotate(90deg)'})
@@ -144,16 +148,11 @@ export default class {
         .html("")
       this.counter ++
     }
-
-    bills.forEach(bill => {
-      $(`#open-bill${bill.id}`).click((e) => this.handleEditTicket(e, bill, bills))
-    })
-
     return bills
-
   }
 
   // not need to cover this function by tests
+   /* istanbul ignore next */
   getBillsAllUsers = () => {
     if (this.firestore) {
       return this.firestore
@@ -174,6 +173,7 @@ export default class {
   }
     
   // not need to cover this function by tests
+   /* istanbul ignore next */
   updateBill = (bill) => {
     if (this.firestore) {
     return this.firestore
